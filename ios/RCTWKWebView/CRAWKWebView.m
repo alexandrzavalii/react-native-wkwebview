@@ -54,6 +54,24 @@
   return self = [super initWithFrame:frame];
 }
 
+static NSString *rexKey1 = @"ContentBlockingRules";
+
+- ( NSString * ) contentBlockingRules
+{
+  return @" \
+  [ \
+  { \
+  \"trigger\": { \
+  \"url-filter\": \".*\", \
+  \"resource-type\": [\"image\", \"font\", \"media\", \"style-sheet\"] \
+  }, \
+  \"action\": { \
+  \"type\": \"block\" \
+  } \
+  } \
+  ]";
+}
+
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
 - (instancetype)initWithProcessPool:(WKProcessPool *)processPool
@@ -86,7 +104,23 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 #endif
     [self setupPostMessageScript];
     [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
-    [self addSubview:_webView];
+    if (_disableAssets && @available(iOS 11.0, *)) {
+      [WKContentRuleListStore.defaultStore compileContentRuleListForIdentifier: rexKey1 encodedContentRuleList: [self contentBlockingRules] completionHandler: ^(WKContentRuleList *contentRuleList, NSError *err) {
+        
+        if (err != nil) {
+          NSLog(@"Error on content rule list not compiled");
+        }
+        
+        if (contentRuleList) {
+          [self->_webView.configuration.userContentController addContentRuleList: contentRuleList];
+          [NSUserDefaults.standardUserDefaults setObject: @YES forKey: rexKey1];
+          [self addSubview:self->_webView];
+        }
+      }];
+    } else {
+      // Fallback on earlier versions
+      [self addSubview:_webView];
+    }
   }
   return self;
 }

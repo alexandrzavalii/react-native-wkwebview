@@ -243,6 +243,10 @@ class WKWebView extends React.Component {
      */
     hideKeyboardAccessoryView: PropTypes.bool,
     /**
+     * Disable loading assets for the page.
+     */
+    disableAssets: PropTypes.bool,
+    /**
      * Enable the keyboard to display when focusing an input in a webview programatically
      */
     keyboardDisplayRequiresUserAction: PropTypes.bool,
@@ -355,6 +359,7 @@ class WKWebView extends React.Component {
         automaticallyAdjustContentInsets={this.props.automaticallyAdjustContentInsets}
         openNewWindowInWebView={this.props.openNewWindowInWebView}
         hideKeyboardAccessoryView={this.props.hideKeyboardAccessoryView}
+        disableAssets={this.props.disableAssets}
         keyboardDisplayRequiresUserAction={this.props.keyboardDisplayRequiresUserAction}
         allowsLinkPreview={this.props.allowsLinkPreview}
         onLoadingStart={this._onLoadingStart}
