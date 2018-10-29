@@ -77,6 +77,10 @@ class WKWebView extends React.Component {
   static JSNavigationScheme = JSNavigationScheme;
   static NavigationType = NavigationType;
 
+  static defaultProps = {
+    disableAssets: false
+  }
+  
   static propTypes = {
     ...ViewPropTypes,
 
